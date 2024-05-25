@@ -32,6 +32,7 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student is created successfully',
       data: result,
     });
+    // eslint-disable-next-line
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -49,6 +50,7 @@ const getAllStudents = async (req: Request, res: Response) => {
       message: 'Students are retrieved successfully',
       data: result,
     });
+    // eslint-disable-next-line
   } catch (error: any) {
     res.status(500).json({
       success: false,

@@ -39,6 +39,14 @@ export type TStudent = {
   isActive: 'active' | 'blocked';
 };
 
+// For creating static
+export interface StudentModel extends Model<TStudent> {
+  // eslint-disable-next-line
+  isUserExists(id: string): Promise<TStudent | null>;
+}
+
+/*
+// For creating instance
 export type StudentMethods = {
   isUserExists(id: string): Promise<TStudent | null>;
 };
@@ -48,3 +56,5 @@ export type StudentModel = Model<
   Record<string, never>,
   StudentMethods
 >;
+
+*/
