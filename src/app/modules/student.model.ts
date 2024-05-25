@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 // import validator from 'validator';
+import bcrypt from 'bcrypt';
 import {
   // StudentMethods,
   StudentModel,
@@ -8,6 +9,7 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
+import config from '../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -106,6 +108,11 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     unique: true,
     trim: true,
   },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    maxlength: [20, 'Password cannot be more than 20 characters'],
+  },
   name: {
     type: userNameSchema,
     required: [true, 'Name is required'],
@@ -177,6 +184,10 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     default: 'active',
     trim: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // creating a custom static method
@@ -194,5 +205,40 @@ studentSchema.methods.isUserExists = async function (id: string) {
   return existingUser;
 };
 */
+
+// Mongoose pre save/post save middlewares/hooks
+
+studentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  next();
+});
+
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+// query middleware
+studentSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// [ { '$match': { id: '157544sdffgdafasf4' } } ]
+studentSchema.pre('aggregate', async function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);

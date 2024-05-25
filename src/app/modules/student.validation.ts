@@ -74,11 +74,14 @@ const localGuardianValidationSchema = z.object({
 });
 
 const studentValidationSchema = z.object({
-  id: z
+  id: z.string({
+    required_error: 'Id is required',
+  }),
+  password: z
     .string({
-      required_error: 'Id is required',
+      required_error: 'Password is required',
     })
-    .trim(),
+    .max(20),
   name: userNameValidationSchema.required(),
   gender: z.enum(['male', 'female', 'other'], {
     errorMap: issue => ({ message: `${issue} is not valid` }),
@@ -121,6 +124,7 @@ const studentValidationSchema = z.object({
   localGuardian: localGuardianValidationSchema.required(),
   profileImg: z.string().optional(),
   isActive: z.enum(['active', 'blocked']).default('active'),
+  isDeleted: z.boolean().default(false),
 });
 
 export default studentValidationSchema;

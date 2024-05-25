@@ -66,6 +66,9 @@ const studentValidationSchema = Joi.object({
   id: Joi.string().trim().required().messages({
     'string.empty': 'ID is required',
   }),
+  password: Joi.string().required().messages({
+    'string.empty': 'ID is required',
+  }),
   name: userNameValidationSchema.required().messages({
     'object.base': 'Name is required',
   }),
@@ -115,6 +118,7 @@ const studentValidationSchema = Joi.object({
     .messages({
       'any.only': '{#value} is not a valid status',
     }),
+  isDeleted: Joi.string().valid(true, false).default(false),
 });
 
 export default studentValidationSchema;
