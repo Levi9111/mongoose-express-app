@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userSchema = new Schema<TUser>(
   {
@@ -9,7 +11,8 @@ const userSchema = new Schema<TUser>(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Password is required'],
+      maxlength: [20, 'Password cannot be more than 20 characters'],
     },
     needsPasswordChange: {
       type: Boolean,
@@ -33,5 +36,22 @@ const userSchema = new Schema<TUser>(
     timestamps: true,
   },
 );
+
+userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  next();
+});
+
+// set empty string after saving the password
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
 
 export const User = model<TUser>('User', userSchema);
