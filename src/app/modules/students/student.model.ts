@@ -9,7 +9,7 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import config from '../config';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -108,6 +108,13 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     unique: true,
     trim: true,
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is required'],
+    unique: true,
+    trim: true,
+    ref: 'User',
+  },
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -175,15 +182,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     required: [true, 'Local Guardian information is required'],
   },
   profileImg: { type: String, trim: true },
-  isActive: {
-    type: String,
-    enum: {
-      values: ['active', 'blocked'],
-      message: '{VALUE} is not a valid status',
-    },
-    default: 'active',
-    trim: true,
-  },
+
   isDeleted: {
     type: Boolean,
     default: false,
