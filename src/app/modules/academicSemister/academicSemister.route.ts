@@ -17,6 +17,9 @@ router.get('/', AcademicSemisterControllers.getAllSemisters);
 
 router.get(
   '/:semisterId',
+  validateRequest(
+    AcademicSemisterValidations.updateAcademicSemisterValidationSchema,
+  ),
   AcademicSemisterControllers.getSingleAcademicSemister,
 );
 

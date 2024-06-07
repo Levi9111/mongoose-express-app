@@ -26,9 +26,13 @@ const getSingleAcacemicSemisterFromDB = async (id: string) => {
 
 const updateASemisterIntoDB = async (
   id: string,
-  payload: TAcademicSemister,
+  payload: Partial<TAcademicSemister>,
 ) => {
-  if (academicSemisterNameCodeMapper[payload.name] !== payload.code)
+  if (
+    payload.name &&
+    payload.code &&
+    academicSemisterNameCodeMapper[payload.name] !== payload.code
+  )
     throw new Error('Invalid semister code');
 
   const result = await AcademicSemister.findByIdAndUpdate(id, payload, {
