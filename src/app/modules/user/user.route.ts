@@ -1,13 +1,15 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { UserControllers } from './user.controller';
+
+import { studentValidations } from '../students/student.validation';
+import validateRequest from '../../middlewares/validateRequest';
 
 const router = express.Router();
 
-const guardMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  console.log(`Guard middleware`);
-  next();
-};
-
-router.post('/create-student', guardMiddleware, UserControllers.createStudent);
+router.post(
+  '/create-student',
+  validateRequest(studentValidations.createStudentValidationSchema),
+  UserControllers.createStudent,
+);
 
 export const UserRoutes = router;

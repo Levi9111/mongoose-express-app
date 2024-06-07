@@ -73,58 +73,55 @@ const localGuardianValidationSchema = z.object({
     .trim(),
 });
 
-const studentValidationSchema = z.object({
-  id: z.string({
-    required_error: 'Id is required',
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z
+      .string({
+        required_error: 'Password is required',
+      })
+      .max(20),
+    student: z.object({
+      name: userNameValidationSchema.required(),
+      gender: z.enum(['male', 'female', 'other'], {
+        errorMap: issue => ({ message: `${issue} is not valid` }),
+      }),
+      dateOfBirth: z.date().optional(),
+      email: z
+        .string({
+          required_error: 'Email is required',
+        })
+        .email('Invalid email format')
+        .trim(),
+      contactNo: z
+        .string({
+          required_error: 'Contact Number is required',
+        })
+        .trim(),
+      emergencyContactNo: z
+        .string({
+          required_error: 'Emergency contact number is required',
+        })
+        .trim(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z
+        .string({
+          required_error: 'Present address is reqired',
+        })
+        .trim(),
+      permanentAddress: z
+        .string({
+          required_error: 'Permanent address is reqired',
+        })
+        .trim(),
+      guardian: guardianValidationSchema.required(),
+      localGuardian: localGuardianValidationSchema.required(),
+      profileImg: z.string().optional(),
+    }),
   }),
-  password: z
-    .string({
-      required_error: 'Password is required',
-    })
-    .max(20),
-  name: userNameValidationSchema.required(),
-  gender: z.enum(['male', 'female', 'other'], {
-    errorMap: issue => ({ message: `${issue} is not valid` }),
-  }),
-  dateOfBirth: z
-    .string({
-      required_error: 'Date of birth is required',
-    })
-    .trim(),
-  email: z
-    .string({
-      required_error: 'Email is required',
-    })
-    .email('Invalid email format')
-    .trim(),
-  contactNo: z
-    .string({
-      required_error: 'Contact Number is required',
-    })
-    .trim(),
-  emergencyContactNo: z
-    .string({
-      required_error: 'Emergency contact number is required',
-    })
-    .trim(),
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-  presentAddress: z
-    .string({
-      required_error: 'Present address is reqired',
-    })
-    .trim(),
-  permanentAddress: z
-    .string({
-      required_error: 'Permanent address is reqired',
-    })
-    .trim(),
-  guardian: guardianValidationSchema.required(),
-  localGuardian: localGuardianValidationSchema.required(),
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean().default(false),
 });
 
-export default studentValidationSchema;
+export const studentValidations = {
+  createStudentValidationSchema,
+};
