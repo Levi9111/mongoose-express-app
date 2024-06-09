@@ -7,6 +7,7 @@ import { Student } from '../students/student.model';
 import { TUser } from './user.interface';
 import { generateStudentId } from './user.utils';
 import { User } from './usetr.model';
+import mongoose from 'mongoose';
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a  user object
@@ -24,24 +25,39 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     payload.admissionSemister,
   );
 
-  if (!admissionSemister)
-    throw new AppError(httpStatus.NOT_FOUND, 'No admissionSemister found');
+  const session = await mongoose.startSession();
 
-  // set generated id
-  userData.id = await generateStudentId(admissionSemister);
+  try {
+    session.startTransaction();
+    if (!admissionSemister)
+      throw new AppError(httpStatus.NOT_FOUND, 'No admissionSemister found');
 
-  // create a user
-  const newUser = await User.create(userData);
+    // set generated id
+    userData.id = await generateStudentId(admissionSemister);
 
-  // create a student
-  if (Object.keys(newUser).length) {
+    // create a user(transaction -1)
+    const newUser = await User.create([userData], { session });
+
+    // create a student
+    if (!newUser.length)
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     // set id , _id as user
-    payload.id = newUser.id; // Embadded id
-    payload.user = newUser._id; // Referencing _id
+    payload.id = newUser[0].id; // Embadded id
+    payload.user = newUser[0]._id; // Referencing _id
 
-    const newStudentData = await Student.create(payload);
+    // create a student (translation - 2)
+    const newStudentData = await Student.create([payload], { session });
+
+    if (!newStudentData.length)
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+
+    await session.commitTransaction();
+    await session.endSession();
 
     return newStudentData;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
   }
 };
 
