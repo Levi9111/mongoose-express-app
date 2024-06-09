@@ -1,10 +1,12 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { academicSemisterNameCodeMapper } from './academicSemister.constant';
 import { TAcademicSemister } from './academicSemister.interface';
 import { AcademicSemister } from './academicSemister.model';
 
 const createAcademicSemisterIntoDB = async (payload: TAcademicSemister) => {
   if (academicSemisterNameCodeMapper[payload.name] !== payload.code) {
-    throw new Error('Invalid Semister Code');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Semister Code');
   }
 
   const result = await AcademicSemister.create(payload);
@@ -33,7 +35,7 @@ const updateASemisterIntoDB = async (
     payload.code &&
     academicSemisterNameCodeMapper[payload.name] !== payload.code
   )
-    throw new Error('Invalid semister code');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid semister code');
 
   const result = await AcademicSemister.findByIdAndUpdate(id, payload, {
     new: true,
