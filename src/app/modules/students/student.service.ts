@@ -5,8 +5,17 @@ import { User } from '../user/usetr.model';
 import mongoose from 'mongoose';
 import { TStudent } from './student.interface';
 
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+  let searchTerm = '';
+
+  if (query?.searchTerm) searchTerm = query?.searchTerm as string;
+
+  const result = await Student.find({
+    $or: studentSearchableFields.map(field => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
     .populate('admissionSemister')
     .populate({
       path: 'academicDepartment',
