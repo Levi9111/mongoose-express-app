@@ -4,18 +4,29 @@ import { Student } from './student.model';
 import { User } from '../user/usetr.model';
 import mongoose from 'mongoose';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFields } from './student.constants';
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  /*
   const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
   let searchTerm = '';
+  const queryObj = { ...query };
 
   if (query?.searchTerm) searchTerm = query?.searchTerm as string;
 
-  const result = await Student.find({
+  const searchQuery = Student.find({
     $or: studentSearchableFields.map(field => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  })
+  });
+
+  // filtering
+  const excludedFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];
+  excludedFields.forEach(el => delete queryObj[el]);
+
+  const filteredQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemister')
     .populate({
       path: 'academicDepartment',
@@ -23,6 +34,47 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
         path: 'academicFaculty',
       },
     });
+
+  // sorting
+  let sort = '-createdAt';
+
+  if (query?.sort) sort = query?.sort as string;
+
+  const sortedQuery = filteredQuery.sort(sort);
+
+  // limiting
+  let page = 1;
+  let limit = 10;
+  let skip = 0;
+  if (query.limit) limit = Number(query.limit);
+
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+
+  const paginatedQuery = sortedQuery.skip(skip);
+
+  const limitedQuery = paginatedQuery.limit(limit);
+
+  // field limiting
+  let fields = '-__v';
+  if (query.fields) fields = (query.fields as string).split(',').join(' '); //fields:name,email ---> fields:name email
+
+  const fieldQuery = await limitedQuery.select(fields);
+
+  return fieldQuery;
+
+  */
+
+  const studentQuery = new QueryBuilder(Student.find(), query)
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await studentQuery.modelQuery;
 
   return result;
 };
