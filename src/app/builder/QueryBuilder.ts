@@ -30,21 +30,14 @@ class QueryBuilder<T> {
     const excludedFields = ['searchTerm', 'sort', 'page', 'limit', 'fields'];
     excludedFields.forEach(el => delete queryObj[el]);
 
-    this.modelQuery = this.modelQuery
-      .find(queryObj as FilterQuery<T>)
-      .populate('admissionSemister')
-      .populate({
-        path: 'academicDepartment',
-        populate: {
-          path: 'academicFaculty',
-        },
-      });
+    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
     return this;
   }
 
   sort() {
-    const sort = this?.query?.sort || '-createdAt';
+    const sort =
+      (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
 
     return this;
