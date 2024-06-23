@@ -1,24 +1,24 @@
 import { Schema, model } from 'mongoose';
-import { TAcademicSemister } from './academicSemister.interface';
+import { TAcademicSemester } from './academicSemester.interface';
 import {
   Months,
-  academicSemisterCode,
-  academicSemisterName,
-} from './academicSemister.constant';
+  academicSemesterCode,
+  academicSemesterName,
+} from './academicSemester.constant';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
-const academicSemisterSchema = new Schema<TAcademicSemister>(
+const academicSemesterSchema = new Schema<TAcademicSemester>(
   {
     name: {
       type: String,
       required: true,
-      enum: academicSemisterName,
+      enum: academicSemesterName,
     },
     code: {
       type: String,
       required: true,
-      enum: academicSemisterCode,
+      enum: academicSemesterCode,
     },
     year: {
       type: String,
@@ -41,19 +41,19 @@ const academicSemisterSchema = new Schema<TAcademicSemister>(
 );
 
 // next here is a mongoose function not from express
-academicSemisterSchema.pre('save', async function (next) {
-  const isSemisterExists = await AcademicSemister.findOne({
+academicSemesterSchema.pre('save', async function (next) {
+  const isSemesterExists = await AcademicSemester.findOne({
     year: this.year,
     name: this.name,
   });
 
-  if (isSemisterExists)
-    throw new AppError(httpStatus.CONFLICT, 'Semister already exists');
+  if (isSemesterExists)
+    throw new AppError(httpStatus.CONFLICT, 'Semester already exists');
 
   next();
 });
 
-export const AcademicSemister = model<TAcademicSemister>(
-  'AcademicSemister',
-  academicSemisterSchema,
+export const AcademicSemester = model<TAcademicSemester>(
+  'AcademicSemester',
+  academicSemesterSchema,
 );

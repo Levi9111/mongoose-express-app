@@ -27,7 +27,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const filteredQuery = searchQuery
     .find(queryObj)
-    .populate('admissionSemister')
+    .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: {
@@ -69,7 +69,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const studentQuery = new QueryBuilder(
     Student.find()
-      .populate('admissionSemister')
+      .populate('admissionSemester')
       .populate({
         path: 'academicDepartment',
         populate: {
@@ -91,7 +91,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
 const getSingleStudentFromDB = async (id: string) => {
   const result = await Student.findOne({ id })
-    .populate('admissionSemister')
+    .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: {

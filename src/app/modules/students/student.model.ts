@@ -178,9 +178,9 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   },
   profileImg: { type: String, trim: true },
 
-  admissionSemister: {
+  admissionSemester: {
     type: Schema.Types.ObjectId,
-    ref: 'AcademicSemister',
+    ref: 'AcademicSemester',
   },
 
   academicDepartment: {

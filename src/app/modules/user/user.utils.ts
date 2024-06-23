@@ -1,4 +1,4 @@
-import { TAcademicSemister } from '../academicSemister/academicSemister.interface';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { User } from './usetr.model';
 
 const findLastStudentId = async () => {
@@ -19,19 +19,19 @@ const findLastStudentId = async () => {
   return lastStudent?.id ? lastStudent.id : undefined;
 };
 
-export const generateStudentId = async (payload: TAcademicSemister) => {
+export const generateStudentId = async (payload: TAcademicSemester) => {
   let currentId = (0).toString();
   // 2027 01 0004
   const lastStudentId = await findLastStudentId();
-  const lastStudentSemisterCode = lastStudentId?.substring(4, 6);
-  const lastStudentSemisterYear = lastStudentId?.substring(0, 4);
-  const currentStudentSemisterCode = payload.code;
-  const currentStudentSemisterYear = payload.year;
+  const lastStudentSemesterCode = lastStudentId?.substring(4, 6);
+  const lastStudentSemesterYear = lastStudentId?.substring(0, 4);
+  const currentStudentSemesterCode = payload.code;
+  const currentStudentSemesterYear = payload.year;
 
   if (
     lastStudentId &&
-    lastStudentSemisterCode === currentStudentSemisterCode &&
-    lastStudentSemisterYear === currentStudentSemisterYear
+    lastStudentSemesterCode === currentStudentSemesterCode &&
+    lastStudentSemesterYear === currentStudentSemesterYear
   ) {
     currentId = lastStudentId.substring(6);
   }

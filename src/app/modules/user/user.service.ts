@@ -2,7 +2,7 @@
 import httpStatus from 'http-status';
 import config from '../../config';
 import AppError from '../../errors/AppError';
-import { AcademicSemister } from '../academicSemister/academicSemister.model';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TStudent } from '../students/student.interface';
 import { Student } from '../students/student.model';
 import { TUser } from './user.interface';
@@ -30,20 +30,20 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // set student role
   userData.role = 'student';
 
-  // find academic semister info
-  const admissionSemister = await AcademicSemister.findById(
-    payload.admissionSemister,
+  // find academic semester info
+  const admissionSemester = await AcademicSemester.findById(
+    payload.admissionSemester,
   );
 
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
-    if (!admissionSemister)
-      throw new AppError(httpStatus.NOT_FOUND, 'No admissionSemister found');
+    if (!admissionSemester)
+      throw new AppError(httpStatus.NOT_FOUND, 'No admissionSemester found');
 
     // set generated id
-    userData.id = await generateStudentId(admissionSemister);
+    userData.id = await generateStudentId(admissionSemester);
 
     // create a user(transaction -1)
     const newUser = await User.create([userData], { session });
@@ -86,7 +86,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   // set student role
   userData.role = 'faculty';
 
-  // find academic semister info
+  // find academic semester info
   const academicDepartment = await AcademicDepartment.findById(
     payload.academicDepartment,
   );

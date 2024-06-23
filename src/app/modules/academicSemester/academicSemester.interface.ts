@@ -12,20 +12,20 @@ export type TMonths =
   | 'November'
   | 'December';
 
-export type TAcademicSemisterName = 'Autumn' | 'Summer' | 'Fall';
+export type TAcademicSemesterName = 'Autumn' | 'Summer' | 'Fall';
 
-export type TAcademicSemisterCode = '01' | '02' | '03';
+export type TAcademicSemesterCode = '01' | '02' | '03';
 
-export type TAcademicSemister = {
-  name: TAcademicSemisterName;
-  code: TAcademicSemisterCode;
+export type TAcademicSemester = {
+  name: TAcademicSemesterName;
+  code: TAcademicSemesterCode;
   year: string;
   startMonth: TMonths;
   endMonth: TMonths;
 };
 
 /**
-   type TAcademicSemisterNameCodeMapper = {
+   type TAcademicSemesterNameCodeMapper = {
     Autumn: '01';
     Summar: '02';
     Fall: '03';
@@ -33,6 +33,6 @@ export type TAcademicSemister = {
    */
 
 //   dynamic type
-export type TAcademicSemisterNameCodeMapper = {
+export type TAcademicSemesterNameCodeMapper = {
   [key: string]: string;
 };
