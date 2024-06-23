@@ -34,7 +34,14 @@ const updateCourseValidationSchema = object({
   }),
 });
 
+const facultiesWithCourseValidationSchema = object({
+  body: object({
+    faculties: array(string()),
+  }),
+});
+
 export const CourseValidations = {
   createCourseValidationSchema,
   updateCourseValidationSchema,
+  facultiesWithCourseValidationSchema,
 };
