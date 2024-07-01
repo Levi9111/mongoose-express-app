@@ -32,7 +32,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(
-    payload.admissionSemester,
+    payload?.admissionSemester,
   );
 
   const session = await mongoose.startSession();
@@ -40,7 +40,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   try {
     session.startTransaction();
     if (!admissionSemester)
-      throw new AppError(httpStatus.NOT_FOUND, 'No admissionSemester found');
+      throw new AppError(httpStatus.NOT_FOUND, 'No admission Semester found');
 
     // set generated id
     userData.id = await generateStudentId(admissionSemester);

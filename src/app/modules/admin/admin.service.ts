@@ -16,6 +16,7 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await adminQuery.modelQuery;
+
   return result;
 };
 

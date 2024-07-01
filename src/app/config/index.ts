@@ -11,4 +11,5 @@ export default {
   default_password: process.env.DEFAULT_PASS,
   default_faculty_pass: process.env.DEFAULT_FACULTY_PASS,
   default_admin_pass: process.env.DEFAULT_ADMIN_PASS,
+  jwt_access_secret: process.env.JWT_ACCESS_SECRET,
 };
